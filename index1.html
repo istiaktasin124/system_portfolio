@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User@System:~$ Portfolio</title>
+    <style>
+        /* --- THEME CONFIGURATION --- */
+        :root {
+            --bg-color: #0d1117;
+            --text-color: #00ff41; /* Hacker Green */
+            --error-color: #ff5f5f;
+            --link-color: #58a6ff;
+            --prompt-color: #d2a8ff;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 20px;
+            font-size: 16px;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        #terminal {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+        }
+        a:hover { text-decoration: underline; }
+
+        .line { margin-bottom: 5px; }
+        
+        /* INPUT AREA */
+        .input-area {
+            display: flex;
+            align-items: center;
+        }
+
+        .prompt {
+            color: var(--prompt-color);
+            margin-right: 10px;
+            white-space: nowrap;
+        }
+
+        input {
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            font-family: inherit;
+            font-size: inherit;
+            flex-grow: 1;
+            outline: none;
+            caret-color: var(--text-color);
+        }
+
+        /* UTILITIES */
+        .command-output { color: #c9d1d9; white-space: pre-wrap; margin-bottom: 15px;}
+        .error { color: var(--error-color); }
+        .ascii-art { font-size: 10px; line-height: 10px; color: var(--link-color); margin-bottom: 20px; white-space: pre;}
+    </style>
+</head>
+<body>
+
+<div id="terminal">
+    <div class="ascii-art">
+  ____  _  _  ____  ____  ____  __  __ 
+ / ___)( \/ )/ ___)(_  _)(  __)(  \/  )
+ \___ \ )  / \___ \  )(   ) _)  )    ( 
+ (____/(__/  (____/ (__) (____)(_/\/\_)
+    </div>
+    <div class="line">Welcome to [User]'s System v1.0</div>
+    <div class="line">Type <span style="color:var(--link-color)">'help'</span> to see available commands.</div>
+    <br>
+
+    <div id="output"></div>
+
+    <div class="input-area">
+        <span class="prompt">visitor@portfolio:~$</span>
+        <input type="text" id="command-input" autocomplete="off" autofocus>
+    </div>
+</div>
+
+<script>
+    const inputField = document.getElementById('command-input');
+    const outputDiv = document.getElementById('output');
+
+    // --- CONFIGURATION: EDIT THIS SECTION ---
+    const data = {
+        about: `
+  <span style="color:white; font-weight:bold;">PROFILE</span>
+  Hi, I am [Your Name]. 
+  I am a [Your Major/Job Title] based in [Your Country].
+  
+  I am passionate about [Topic A] and [Topic B].
+  
+  <span style="color:var(--link-color)">Location:</span> [City, Country]`,
+        
+        skills: `
+  <span style="color:white; font-weight:bold;">TECHNICAL SKILLS</span>
+  - <span style="color:var(--link-color)">Languages:</span> C, Python, JavaScript
+  - <span style="color:var(--link-color)">Tools:</span> Git, VS Code, Linux
+  - <span style="color:var(--link-color)">Databases:</span> MySQL, MongoDB`,
+        
+        projects: `
+  <span style="color:white; font-weight:bold;">PROJECTS</span>
+  1. <a href="#">Project Name One</a> 
+     - Brief description of what this project does.
+  2. <a href="#">Project Name Two</a> 
+     - Brief description of the tools used.`,
+        
+        social: `
+  <span style="color:white; font-weight:bold;">CONNECT</span>
+  - <a href="#" target="_blank">LinkedIn</a>
+  - <a href="#" target="_blank">GitHub</a>
+  - <a href="#" target="_blank">Email / WhatsApp</a>`,
+
+        sudo: `
+  <span style="color:var(--error-color)">PERMISSION DENIED:</span> You are not the administrator. This incident will be reported.`,
+        
+        help: `
+  <span style="color:white;">Available commands:</span>
+  <span style="color:var(--link-color)">about</span>    - Information about me
+  <span style="color:var(--link-color)">skills</span>   - Technical skills
+  <span style="color:var(--link-color)">projects</span> - My works
+  <span style="color:var(--link-color)">social</span>   - Social links
+  <span style="color:var(--link-color)">clear</span>    - Clear terminal
+  `
+    };
+
+    // --- TERMINAL LOGIC ---
+    inputField.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            const input = inputField.value.trim();
+            const command = input.toLowerCase();
+            
+            // 1. Add input to history
+            const historyLine = document.createElement('div');
+            historyLine.innerHTML = `<span class="prompt">visitor@portfolio:~$</span> ${input}`;
+            outputDiv.appendChild(historyLine);
+
+            // 2. Process Command
+            const responseLine = document.createElement('div');
+            responseLine.className = 'command-output';
+
+            if (command === 'clear') {
+                outputDiv.innerHTML = '';
+                responseLine.remove();
+            } else if (data[command]) {
+                responseLine.innerHTML = data[command];
+                outputDiv.appendChild(responseLine);
+            } else if (command === '') {
+            } else {
+                responseLine.innerHTML = `<span class="error">Command not found: ${input}. Type 'help' for list.</span>`;
+                outputDiv.appendChild(responseLine);
+            }
+
+            inputField.value = '';
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+    });
+
+    // Focus on input anywhere on click
+    document.addEventListener('click', () => inputField.focus());
+</script>
+
+</body>
+</html>
